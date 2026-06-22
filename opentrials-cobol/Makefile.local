@@ -1,0 +1,84 @@
+# ============================================================
+# ReBEC COBOL - Local Build Makefile
+# ============================================================
+
+.RECIPEPREFIX := >
+
+CODES_DIR := codes
+BIN_DIR   := $(CODES_DIR)/bin
+
+COBC      := cobc
+COBFLAGS  := -free
+
+MODULES := \
+	$(BIN_DIR)/LOADCONF.so \
+	$(BIN_DIR)/LOGIN.so
+
+PROGRAMS := \
+	$(BIN_DIR)/test_loadconf \
+	$(BIN_DIR)/test_login \
+	$(BIN_DIR)/trial_list \
+	$(BIN_DIR)/trial_view \
+	$(BIN_DIR)/trial_menu
+
+.PHONY: all modules programs clean run test-config test-login list view menu
+
+all: $(BIN_DIR) modules programs
+> @echo "Build finished successfully."
+
+$(BIN_DIR):
+> mkdir -p $(BIN_DIR)
+
+modules: $(MODULES)
+
+programs: $(PROGRAMS)
+
+$(BIN_DIR)/LOADCONF.so: $(CODES_DIR)/LOADCONF.cbl $(CODES_DIR)/db_config.cpy
+> cd $(CODES_DIR) && $(COBC) -m $(COBFLAGS) -o bin/LOADCONF.so LOADCONF.cbl
+
+$(BIN_DIR)/LOGIN.so: $(CODES_DIR)/LOGIN.cbl $(CODES_DIR)/db_config.cpy $(CODES_DIR)/session.cpy
+> cd $(CODES_DIR) && $(COBC) -m $(COBFLAGS) -o bin/LOGIN.so LOGIN.cbl
+
+$(BIN_DIR)/test_loadconf: $(CODES_DIR)/test_loadconf.cbl $(CODES_DIR)/db_config.cpy $(BIN_DIR)/LOADCONF.so
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/test_loadconf test_loadconf.cbl
+
+$(BIN_DIR)/test_login: $(CODES_DIR)/test_login.cbl $(CODES_DIR)/session.cpy $(BIN_DIR)/LOADCONF.so $(BIN_DIR)/LOGIN.so
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/test_login test_login.cbl
+
+$(BIN_DIR)/request_user: $(CODES_DIR)/request_user.cbl $(CODES_DIR)/db_config.cpy $(BIN_DIR)/LOADCONF.so
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/request_user request_user.cbl
+
+$(BIN_DIR)/trial_list: $(CODES_DIR)/trial_list.cbl $(CODES_DIR)/db_config.cpy $(BIN_DIR)/LOADCONF.so
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/trial_list trial_list.cbl
+
+$(BIN_DIR)/trial_view: $(CODES_DIR)/trial_view.cbl $(CODES_DIR)/db_config.cpy $(BIN_DIR)/LOADCONF.so
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/trial_view trial_view.cbl
+
+$(BIN_DIR)/trial_menu: $(CODES_DIR)/trial_menu.cbl
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/trial_menu trial_menu.cbl
+
+run: all
+> cd $(CODES_DIR) && ./run.sh
+
+test-config: all
+> cd $(CODES_DIR) && export COB_LIBRARY_PATH=./bin && ./bin/test_loadconf
+
+test-login: all
+> cd $(CODES_DIR) && export COB_LIBRARY_PATH=./bin && ./bin/test_login
+
+list: all
+> cd $(CODES_DIR) && export COB_LIBRARY_PATH=./bin && ./bin/trial_list
+
+view: all
+> cd $(CODES_DIR) && export COB_LIBRARY_PATH=./bin && ./bin/trial_view
+
+menu: all
+> cd $(CODES_DIR) && export COB_LIBRARY_PATH=./bin && ./bin/trial_menu
+
+clean:
+> rm -rf $(BIN_DIR)
+> rm -f $(CODES_DIR)/*.tmp
+> rm -f $(CODES_DIR)/login_result.tmp
+> rm -f $(CODES_DIR)/trial_list.tmp
+> rm -f $(CODES_DIR)/trial_view.tmp
+> @echo "Clean finished."
