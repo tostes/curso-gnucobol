@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<root>
+  <trials>
+    <trial>
+      <main>
+        <trial_id>RBR-24p8wdj</trial_id>
+        <utrn>U1111-1339-7254</utrn>
+        <reg_name>REBEC</reg_name>
+        <date_registration>20/06/2026</date_registration>
+        <primary_sponsor>Associacao educacional nove de julho</primary_sponsor>
+        <public_title>Auriculotherapy for health workers: auriculotherapy can improve the health of professionals working in primary care units</public_title>
+        <acronym> </acronym>
+        <scientific_title>Impact of integrating standardized Auriculotherapy into occupational health policies for primary health care phc professionals: an intervention study
+</scientific_title>
+        <scientific_acronym> </scientific_acronym>
+        <date_enrolment>27/04/2026</date_enrolment>
+        <type_enrolment>actual</type_enrolment>
+        <target_size>30</target_size>
+        <recruitment_status>Recruitment completed</recruitment_status>
+        <url>https://ensaiosclinicos.gov.br/rg/RBR-24p8wdj</url>
+        <study_type>Intervention</study_type>
+        <study_design>n/a, randomized-controlled, single-blind</study_design>
+        <phase>N/A</phase>
+        <hc_freetext>burnout; depression; anxiety; mental disorders</hc_freetext>
+        <i_freetext>This is a controlled intervention study with two groups, one experimental and one control, totaling 30 participants, with 15 participants in each group. The study is longitudinal in nature, employing a mixed-methods approach, predominantly quantitative with descriptive qualitative analysis. The study will be conducted at a primary health care unit in the municipality of Guarulhos with primary health care (PHC) workers. All health professionals from the primary health care unit (doctors, nurses, nursing technicians, community health workers, attendants from the unified health system (SUS), and others) will be included, selected through voluntary registration in the open group &quot;circle of well-being&quot;. The auriculotherapy intervention to be applied will be based on standardized protocols validated by the auriculotherapy guide for depression and anxiety from the federal university of santa catarina/national policy on integrative and complementary practices (UFSC/PNPIC). The technique employed is based on the integrative model of traditional chinese medicine (TCM), with contemporary neurophysiological support, especially through the stimulation of auricular areas innervated by the vagus nerve. Cycles of 8 sessions will be carried out weekly for 8 consecutive weeks. Each participant will receive individualized auriculotherapy care within the group, with an average duration of 5 to 8 minutes per person, respecting operational limits and a personalized approach. After inclusion in the study, participants will be randomly allocated to one of two intervention groups. Both groups will receive auriculotherapy, differentiated by the type of application (specific or non-specific), without prior identification to the participant. This strategy aims to allow comparison between the interventions and ensure the scientific validity of the results. Data collection will involve the application of the maslach burnout scale (pre- and post-intervention), a sociodemographic questionnaire, and validated instruments for anxiety and depression, such as the hospital anxiety and depression scale (HADS-14). The variables analyzed included: burnout score, anxiety, depression, sociodemographic data, and adherence.
+</i_freetext>
+        <results_actual_enrolment/>
+        <results_date_completed>15/09/2026</results_date_completed>
+        <results_url_link/>
+        <results_summary/>
+        <results_date_posted/>
+        <results_date_first_publication/>
+        <results_baseline_char/>
+        <results_participant_flow/>
+        <results_adverse_events/>
+        <results_outcome_measures/>
+        <results_url_protocol/>
+        <results_IPD_plan>Yes</results_IPD_plan>
+        <results_IPD_description>Participant data will be stored confidentially and made available only in an anonymized form, without the possibility of individual identification. Data necessary for validating research results may be shared, and said results may be presented at conferences or published in scientific journals, without identifying the participants. The study protocol and analysis plan may be made available upon justified request. Access will occur after the conclusion of the research, for up to five years. Sharing will be restricted to researchers and institutions for exclusively scientific purposes. Regarding the return of results at the end of the research, each participant will receive their own results, individually and confidentially. The information will be explained in simple language and does not serve as a diagnosis. If necessary, the participant will be advised to seek health care. The participant may ask questions at any time</results_IPD_description>
+      </main>
+      <contacts>
+        <contact>
+          <type>public</type>
+          <firstname>Karol Edith Chambi Ibanez</firstname>
+          <middlename/>
+          <lastname/>
+          <address>Vergueiro nº 235/249 12º andar sala 02</address>
+          <city>São Paulo</city>
+          <country1>BR</country1>
+          <zip>01504-001</zip>
+          <telephone>+55(11)99974-4924</telephone>
+          <email>karol905.kc@gmail.com</email>
+          <affiliation>Associacao educacional nove de julho</affiliation>
+        </contact>
+        <contact>
+          <type>scientific</type>
+          <firstname>Karol Edith Chambi Ibanez</firstname>
+          <middlename/>
+          <lastname/>
+          <address>Vergueiro nº 235/249 12º andar sala 02</address>
+          <city>São Paulo</city>
+          <country1>BR</country1>
+          <zip>01504-001</zip>
+          <telephone>+55(11)99974-4924</telephone>
+          <email>karol905.kc@gmail.com</email>
+          <affiliation>Associacao educacional nove de julho</affiliation>
+        </contact>
+      </contacts>
+      <countries>
+        <country2>BR</country2>
+      </countries>
+      <criteria>
+        <inclusion_criteria>Professionals from the primary health care unit; age over 18 years; both genders; participants selected through voluntary registration in the &quot;well-being circle&quot; group; availability to participate in the 8 weekly sessions; signing of the informed consent form (ICF)
+</inclusion_criteria>
+        <agemin>18Y</agemin>
+        <agemax>0</agemax>
+        <gender>-</gender>
+        <exclusion_criteria>Medical leave or vacation during the period; presence of skin lesions or inflammation in the auricle; use of non-removable internal hearing aids; known intolerance to adhesives or materials used (such as allergy to the seed adhesive); marked sensitivity to digital pressure or intense pain in the auricle; pregnant women of any gestational age; attendance of less than 50% of sessions
+</exclusion_criteria>
+      </criteria>
+      <health_condition_code>
+        <hc_code>N01.400.525</hc_code>
+      </health_condition_code>
+      <health_condition_keyword>
+        <hc_keyword>Occupational health</hc_keyword>
+      </health_condition_keyword>
+      <intervention_code>
+        <i_code/>
+      </intervention_code>
+      <intervention_keyword>
+        <i_keyword>N01.400.525</i_keyword>
+        <i_keyword>E02.190</i_keyword>
+      </intervention_keyword>
+      <primary_outcome>
+        <prim_outcome>To evaluate the effect of standardized auriculotherapy on burnout levels in primary healthcare professionals, analyzing its association with symptoms of anxiety and depression and its implications for Occupational Risk Management.</prim_outcome>
+      </primary_outcome>
+      <secondary_outcome>
+        <sec_outcome>Compare the variation in burnout levels between the experimental (AE) and control (ANE) groups, before and after the intervention, using the MBI-HSS. Evaluate the variation in anxiety and depression levels between the groups, using the HADS-14 scale. Characterize the sociodemographic and occupational profile of the participants. Analyze the association between sociodemographic variables and levels of burnout, anxiety, and depression. Evaluate participant adherence and satisfaction in both groups in relation to the intervention. Describe the professionals&apos; perception of auriculotherapy as a strategy for mental health care at work. Analyze the potential of standardized auriculotherapy as an integrative strategy within the scope of Occupational Risk Management (ORM).</sec_outcome>
+      </secondary_outcome>
+      <secondary_sponsor>
+        <sponsor_name>Associacao educacional nove de julho</sponsor_name>
+      </secondary_sponsor>
+      <secondary_ids>
+        <secondary_id>
+          <sec_id>8.358.081</sec_id>
+          <issuing_authority> Comitê de Ética em Pesquisa Da Associação Educacional Nove De Julho</issuing_authority>
+        </secondary_id>
+        <secondary_id>
+          <sec_id>94043325.7.0000.5511</sec_id>
+          <issuing_authority>Plataforma Brasil</issuing_authority>
+        </secondary_id>
+      </secondary_ids>
+      <source_support>
+        <source_name>Associacao educacional nove de julho</source_name>
+      </source_support>
+      <ethics_reviews>
+        <ethics_review>
+          <status>Approved</status>
+          <approval_date>15/04/2026</approval_date>
+          <contact_name>Comitê de Ética em Pesquisa Uninove</contact_name>
+          <contact_address>Rua Vergueiro nº 235/249 – 12º andar sala 02</contact_address>
+          <contact_phone>+55(11)3385-9010</contact_phone>
+          <contact_email>comitedeetica@uninove.br</contact_email>
+        </ethics_review>
+      </ethics_reviews>
+    </trial>
+  </trials>
+</root>
