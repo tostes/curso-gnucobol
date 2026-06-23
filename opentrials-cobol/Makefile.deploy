@@ -1,0 +1,93 @@
+# ============================================================
+# ReBEC COBOL - Deploy Makefile
+# ============================================================
+
+.RECIPEPREFIX := >
+
+REPO_DIR    := /opt/opentrials-cobol
+APP_DIR     := /opt/opentrials-cobol/opentrials-cobol
+DEPLOY_USER := rebecapp
+LOCAL_MAKE  := Makefile.local
+
+SUDO_USER := sudo -u $(DEPLOY_USER)
+
+.PHONY: check-user check-repo check-app status pull compile deploy test-config test-login run clean show-config
+
+check-user:
+> @id $(DEPLOY_USER) >/dev/null 2>&1 || (echo "ERROR: Linux user not found: $(DEPLOY_USER)" && exit 1)
+
+check-repo: check-user
+> @test -d $(REPO_DIR) || (echo "ERROR: Repository directory not found: $(REPO_DIR)" && exit 1)
+> @test -d $(REPO_DIR)/.git || (echo "ERROR: Directory is not a Git repository: $(REPO_DIR)" && exit 1)
+
+check-app: check-repo
+> @test -d $(APP_DIR) || (echo "ERROR: Application directory not found: $(APP_DIR)" && exit 1)
+> @test -d $(APP_DIR)/codes || (echo "ERROR: codes directory not found in: $(APP_DIR)" && exit 1)
+> @test -f $(APP_DIR)/$(LOCAL_MAKE) || (echo "ERROR: $(LOCAL_MAKE) not found in: $(APP_DIR)" && exit 1)
+
+status: check-app
+> @echo "============================================================"
+> @echo "Repository directory : $(REPO_DIR)"
+> @echo "Application directory: $(APP_DIR)"
+> @echo "Deploy user          : $(DEPLOY_USER)"
+> @echo "============================================================"
+> @echo "Git status:"
+> $(SUDO_USER) git -C $(REPO_DIR) status --short
+> @echo " "
+> @echo "Current branch:"
+> $(SUDO_USER) git -C $(REPO_DIR) branch --show-current
+> @echo " "
+> @echo "Remote:"
+> $(SUDO_USER) git -C $(REPO_DIR) remote -v
+> @echo " "
+> @echo "Last commits:"
+> $(SUDO_USER) git -C $(REPO_DIR) log --oneline -n 5
+
+pull: check-repo
+> @echo "============================================================"
+> @echo "Running git pull in $(REPO_DIR) as $(DEPLOY_USER)"
+> @echo "============================================================"
+> $(SUDO_USER) git -C $(REPO_DIR) pull
+
+compile: check-app
+> @echo "============================================================"
+> @echo "Compiling COBOL project in $(APP_DIR) as $(DEPLOY_USER)"
+> @echo "============================================================"
+> $(SUDO_USER) make -C $(APP_DIR) -f $(LOCAL_MAKE) all
+
+deploy: check-app
+> @echo "============================================================"
+> @echo "Starting deploy"
+> @echo "Repository : $(REPO_DIR)"
+> @echo "Application: $(APP_DIR)"
+> @echo "User       : $(DEPLOY_USER)"
+> @echo "============================================================"
+> $(SUDO_USER) git -C $(REPO_DIR) pull
+> $(SUDO_USER) make -C $(APP_DIR) -f $(LOCAL_MAKE) all
+> @echo "============================================================"
+> @echo "Deploy finished successfully."
+> @echo "============================================================"
+
+test-config: check-app
+> $(SUDO_USER) make -C $(APP_DIR) -f $(LOCAL_MAKE) test-config
+
+test-login: check-app
+> $(SUDO_USER) make -C $(APP_DIR) -f $(LOCAL_MAKE) test-login
+
+run: check-app
+> $(SUDO_USER) make -C $(APP_DIR) -f $(LOCAL_MAKE) run
+
+clean: check-app
+> $(SUDO_USER) make -C $(APP_DIR) -f $(LOCAL_MAKE) clean
+
+show-config:
+> @echo "REPO_DIR    = $(REPO_DIR)"
+> @echo "APP_DIR     = $(APP_DIR)"
+> @echo "DEPLOY_USER = $(DEPLOY_USER)"
+> @echo "LOCAL_MAKE  = $(LOCAL_MAKE)"
+> @echo " "
+> @echo "Expected database config:"
+> @echo "$(APP_DIR)/codes/db.conf"
+> @echo " "
+> @echo "Expected binaries:"
+> @echo "$(APP_DIR)/codes/bin/"
