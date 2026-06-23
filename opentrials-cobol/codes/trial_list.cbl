@@ -10,41 +10,58 @@
        DATA DIVISION.
        FILE SECTION.
        FD TRIAL-FILE.
-       01 TRIAL-LINE PIC X(600).
+       01 TRIAL-LINE PIC X(5000).
 
        WORKING-STORAGE SECTION.
-       01 WS-COMMAND        PIC X(10000).
-       01 WS-EOF            PIC X VALUE "N".
-       01 WS-OPTION         PIC X(1).
-       01 WS-DUMMY          PIC X(1).
 
-       01 WS-PAGE           PIC 9(6) VALUE 1.
-       01 WS-PAGE-SIZE      PIC 9(3) VALUE 20.
-       01 WS-OFFSET         PIC 9(9) VALUE 0.
-       01 WS-ROWS           PIC 9(3) VALUE 0.
-       01 WS-LAST-EMPTY     PIC X VALUE "N".
+       01 WS-COMMAND              PIC X(12000).
 
-       01 WS-ID             PIC X(20).
-       01 WS-TRIAL-ID       PIC X(40).
-       01 WS-STATUS         PIC X(30).
-       01 WS-TITLE          PIC X(350).
+       01 WS-PAGE-SIZE            PIC 9(4) VALUE 20.
+       01 WS-PAGE-NUMBER          PIC 9(4) VALUE 1.
+       01 WS-OFFSET               PIC 9(8) VALUE 0.
+       01 WS-OFFSET-TEXT          PIC X(20).
+       01 WS-PAGE-SIZE-TEXT       PIC X(20).
+
+       01 WS-EOF                  PIC X VALUE "N".
+       01 WS-COUNT                PIC 9(4) VALUE 0.
+       01 WS-OPTION               PIC X(1).
+       01 WS-DUMMY                PIC X(1).
+
+       01 WS-ID                   PIC X(20).
+       01 WS-TRIAL-ID             PIC X(80).
+       01 WS-STATUS               PIC X(40).
+       01 WS-REG-DATE             PIC X(40).
+       01 WS-PUBLIC-TITLE         PIC X(250).
+       01 WS-RECRUITMENT-STATUS   PIC X(80).
+       01 WS-STUDY-TYPE           PIC X(80).
+
+       01 WS-COL-ID               PIC X(6).
+       01 WS-COL-RBR              PIC X(14).
+       01 WS-COL-DATE             PIC X(12).
+       01 WS-COL-STATUS           PIC X(12).
+       01 WS-COL-TITLE            PIC X(74).
+       01 WS-COL-RECRUITMENT      PIC X(34).
+       01 WS-COL-TYPE             PIC X(18).
+
+       01 WS-VIEW-ID              PIC X(20).
+       01 WS-VIEW-COMMAND         PIC X(300).
+
+       01 ESC                     PIC X VALUE X"1B".
+       01 ANSI-CLEAR              PIC X(10).
+       01 ANSI-RESET              PIC X(10).
+       01 ANSI-BOLD               PIC X(10).
+       01 ANSI-GREEN              PIC X(10).
+       01 ANSI-CYAN               PIC X(10).
+       01 ANSI-YELLOW             PIC X(10).
+       01 ANSI-RED                PIC X(10).
 
        COPY "db_config.cpy".
-
-       01 ESC               PIC X VALUE X"1B".
-       01 C-RESET           PIC X(10).
-       01 C-BOLD            PIC X(10).
-       01 C-RED             PIC X(10).
-       01 C-GREEN           PIC X(10).
-       01 C-YELLOW          PIC X(10).
-       01 C-CYAN            PIC X(10).
-       01 C-WHITE           PIC X(10).
 
        PROCEDURE DIVISION.
 
        MAIN-PROCEDURE.
 
-           PERFORM INIT-COLORS
+           PERFORM INIT-ANSI
            PERFORM LOAD-CONFIG
 
            PERFORM UNTIL WS-OPTION = "Q" OR WS-OPTION = "q"
@@ -53,14 +70,40 @@
                CALL "SYSTEM" USING WS-COMMAND
                PERFORM SHOW-PAGE
                PERFORM READ-OPTION
-               PERFORM PROCESS-OPTION
            END-PERFORM
 
-           PERFORM CLEAR-SCREEN
-           DISPLAY C-GREEN "Returning to main menu..." C-RESET
-           DISPLAY " "
-
            STOP RUN.
+
+       INIT-ANSI.
+
+           STRING ESC "[2J" ESC "[H"
+               DELIMITED BY SIZE INTO ANSI-CLEAR
+           END-STRING
+
+           STRING ESC "[0m"
+               DELIMITED BY SIZE INTO ANSI-RESET
+           END-STRING
+
+           STRING ESC "[1m"
+               DELIMITED BY SIZE INTO ANSI-BOLD
+           END-STRING
+
+           STRING ESC "[32m"
+               DELIMITED BY SIZE INTO ANSI-GREEN
+           END-STRING
+
+           STRING ESC "[36m"
+               DELIMITED BY SIZE INTO ANSI-CYAN
+           END-STRING
+
+           STRING ESC "[33m"
+               DELIMITED BY SIZE INTO ANSI-YELLOW
+           END-STRING
+
+           STRING ESC "[31m"
+               DELIMITED BY SIZE INTO ANSI-RED
+           END-STRING
+           .
 
        LOAD-CONFIG.
 
@@ -68,33 +111,20 @@
 
            IF DB-STATUS NOT = "OK"
                DISPLAY " "
-               DISPLAY C-RED "Configuration error." C-RESET
+               DISPLAY ANSI-RED "Configuration error." ANSI-RESET
                DISPLAY "Message: " FUNCTION TRIM(DB-MESSAGE)
                DISPLAY " "
                STOP RUN
            END-IF
            .
 
-       INIT-COLORS.
-
-           STRING ESC "[0m"  DELIMITED BY SIZE INTO C-RESET
-           STRING ESC "[1m"  DELIMITED BY SIZE INTO C-BOLD
-           STRING ESC "[31m" DELIMITED BY SIZE INTO C-RED
-           STRING ESC "[32m" DELIMITED BY SIZE INTO C-GREEN
-           STRING ESC "[33m" DELIMITED BY SIZE INTO C-YELLOW
-           STRING ESC "[36m" DELIMITED BY SIZE INTO C-CYAN
-           STRING ESC "[37m" DELIMITED BY SIZE INTO C-WHITE
-           .
-
-       CLEAR-SCREEN.
-
-           MOVE "clear" TO WS-COMMAND
-           CALL "SYSTEM" USING WS-COMMAND
-           .
-
        CALCULATE-OFFSET.
 
-           COMPUTE WS-OFFSET = (WS-PAGE - 1) * WS-PAGE-SIZE
+           COMPUTE WS-OFFSET =
+               (WS-PAGE-NUMBER - 1) * WS-PAGE-SIZE
+
+           MOVE WS-OFFSET TO WS-OFFSET-TEXT
+           MOVE WS-PAGE-SIZE TO WS-PAGE-SIZE-TEXT
            .
 
        BUILD-COMMAND.
@@ -108,21 +138,13 @@
              "-U " FUNCTION TRIM(DB-USER) " "
              "-d " FUNCTION TRIM(DB-NAME) " "
              "-At -F '|' -c "
-             '"SELECT '
-             'id, '
-             'replace(replace(coalesce(trial_id, ''''), '
-             'chr(10), '' ''), ''|'', '' ''), '
-             'replace(replace(coalesce(status, ''''), '
-             'chr(10), '' ''), ''|'', '' ''), '
-             'replace(replace(left(coalesce(public_title, ''''), 80), '
-             'chr(10), '' ''), ''|'', '' '') '
-             'FROM '
+             '"SELECT * FROM '
              FUNCTION TRIM(DB-SCHEMA)
-             '.trial '
-             'ORDER BY id '
-             'LIMIT 20 OFFSET '
-             WS-OFFSET
-             ';" > trial_list.tmp'
+             '.fn_public_trial_list('
+             FUNCTION TRIM(WS-PAGE-SIZE-TEXT)
+             ', '
+             FUNCTION TRIM(WS-OFFSET-TEXT)
+             ');" > trial_list.tmp'
              DELIMITED BY SIZE
              INTO WS-COMMAND
            END-STRING
@@ -130,25 +152,31 @@
 
        SHOW-PAGE.
 
-           MOVE "N" TO WS-EOF
-           MOVE 0 TO WS-ROWS
-           MOVE "N" TO WS-LAST-EMPTY
+           DISPLAY ANSI-CLEAR
 
-           PERFORM CLEAR-SCREEN
+           DISPLAY ANSI-BOLD ANSI-CYAN
+                   "================================================================================================================"
+                   ANSI-RESET
+           DISPLAY ANSI-BOLD
+                   "                                      ReBEC COBOL - Public Trials"
+                   ANSI-RESET
+           DISPLAY ANSI-CYAN
+                   "================================================================================================================"
+                   ANSI-RESET
 
-           DISPLAY C-CYAN
-           DISPLAY "=============================================================="
-           DISPLAY "||              REBEC COBOL - TRIAL LIST                    ||"
-           DISPLAY "=============================================================="
-           DISPLAY C-RESET
-
-           DISPLAY C-YELLOW "Page: " C-RESET WS-PAGE
+           DISPLAY " "
+           DISPLAY " Page: " WS-PAGE-NUMBER
            DISPLAY " "
 
-           DISPLAY C-BOLD
-           DISPLAY "ID        TRIAL ID             STATUS        TITLE"
-           DISPLAY C-RESET
-           DISPLAY "--------------------------------------------------------------"
+           DISPLAY ANSI-BOLD ANSI-YELLOW
+                   " ID    RBR            DATE         STATUS       TYPE               RECRUITMENT                        TITLE"
+                   ANSI-RESET
+           DISPLAY
+                   " ----------------------------------------------------------------------------------------------------------------"
+
+
+           MOVE 0 TO WS-COUNT
+           MOVE "N" TO WS-EOF
 
            OPEN INPUT TRIAL-FILE
 
@@ -157,107 +185,140 @@
                    AT END
                        MOVE "Y" TO WS-EOF
                    NOT AT END
-                       ADD 1 TO WS-ROWS
-                       PERFORM PARSE-AND-DISPLAY
+                       PERFORM PARSE-LINE
+                       PERFORM DISPLAY-TRIAL
+                       ADD 1 TO WS-COUNT
                END-READ
            END-PERFORM
 
            CLOSE TRIAL-FILE
 
-           IF WS-ROWS = 0
-               MOVE "Y" TO WS-LAST-EMPTY
+           IF WS-COUNT = 0
                DISPLAY " "
-               DISPLAY C-RED "No records found on this page." C-RESET
-               DISPLAY " "
+               DISPLAY ANSI-YELLOW
+                       " No public trials found on this page."
+                       ANSI-RESET
            END-IF
 
-           DISPLAY "--------------------------------------------------------------"
            DISPLAY " "
-
-           DISPLAY C-GREEN  "N" C-RESET " - Next page    "
-                   C-GREEN  "P" C-RESET " - Previous page    "
-                   C-YELLOW "V" C-RESET " - View trial    "
-                   C-RED    "Q" C-RESET " - Quit"
-
-           DISPLAY " "
+           DISPLAY
+                   " ----------------------------------------------------------------------------------------------------------------"
+           DISPLAY ANSI-BOLD
+                   " N"
+                   ANSI-RESET
+                   " - Next page   "
+                   ANSI-BOLD
+                   "P"
+                   ANSI-RESET
+                   " - Previous page   "
+                   ANSI-BOLD
+                   "V"
+                   ANSI-RESET
+                   " - View trial   "
+                   ANSI-BOLD
+                   "Q"
+                   ANSI-RESET
+                   " - Quit"
+           DISPLAY
+                   " ----------------------------------------------------------------------------------------------------------------"
            .
 
-       PARSE-AND-DISPLAY.
+       PARSE-LINE.
 
            MOVE SPACES TO WS-ID
            MOVE SPACES TO WS-TRIAL-ID
            MOVE SPACES TO WS-STATUS
-           MOVE SPACES TO WS-TITLE
+           MOVE SPACES TO WS-REG-DATE
+           MOVE SPACES TO WS-PUBLIC-TITLE
+           MOVE SPACES TO WS-RECRUITMENT-STATUS
+           MOVE SPACES TO WS-STUDY-TYPE
 
            UNSTRING TRIAL-LINE
                DELIMITED BY "|"
                INTO WS-ID
                     WS-TRIAL-ID
                     WS-STATUS
-                    WS-TITLE
+                    WS-REG-DATE
+                    WS-PUBLIC-TITLE
+                    WS-RECRUITMENT-STATUS
+                    WS-STUDY-TYPE
            END-UNSTRING
+           .
+
+       DISPLAY-TRIAL.
+
+           MOVE SPACES TO WS-COL-ID
+           MOVE SPACES TO WS-COL-RBR
+           MOVE SPACES TO WS-COL-DATE
+           MOVE SPACES TO WS-COL-STATUS
+           MOVE SPACES TO WS-COL-TITLE
+           MOVE SPACES TO WS-COL-RECRUITMENT
+           MOVE SPACES TO WS-COL-TYPE
+
+           MOVE FUNCTION TRIM(WS-ID) TO WS-COL-ID
+           MOVE FUNCTION TRIM(WS-TRIAL-ID) TO WS-COL-RBR
+           MOVE FUNCTION TRIM(WS-REG-DATE) TO WS-COL-DATE
+           MOVE FUNCTION TRIM(WS-STATUS) TO WS-COL-STATUS
+           MOVE FUNCTION TRIM(WS-PUBLIC-TITLE) TO WS-COL-TITLE
+           MOVE FUNCTION TRIM(WS-RECRUITMENT-STATUS)
+               TO WS-COL-RECRUITMENT
+           MOVE FUNCTION TRIM(WS-STUDY-TYPE) TO WS-COL-TYPE
 
            DISPLAY
-               WS-ID(1:8) "  "
-               WS-TRIAL-ID(1:18) "  "
-               WS-STATUS(1:12) "  "
-               WS-TITLE(1:80)
+               ANSI-GREEN WS-COL-ID ANSI-RESET
+               " "
+               ANSI-CYAN WS-COL-RBR ANSI-RESET
+               " "
+               WS-COL-DATE
+               " "
+               ANSI-YELLOW WS-COL-STATUS ANSI-RESET
+               " "
+               WS-COL-TYPE
+               " "
+               WS-COL-RECRUITMENT
+               " "
+               WS-COL-TITLE
            .
+
 
        READ-OPTION.
 
-           DISPLAY "Choose option: " WITH NO ADVANCING
+           DISPLAY "Option: " WITH NO ADVANCING
            ACCEPT WS-OPTION
-           .
-
-       PROCESS-OPTION.
 
            EVALUATE WS-OPTION
-
                WHEN "N"
                WHEN "n"
-                   ADD 1 TO WS-PAGE
+                   ADD 1 TO WS-PAGE-NUMBER
 
                WHEN "P"
                WHEN "p"
-                   IF WS-PAGE > 1
-                       SUBTRACT 1 FROM WS-PAGE
-                   ELSE
-                       DISPLAY " "
-                       DISPLAY C-YELLOW
-                               "You are already on the first page."
-                               C-RESET
-                       PERFORM PRESS-ENTER
+                   IF WS-PAGE-NUMBER > 1
+                       SUBTRACT 1 FROM WS-PAGE-NUMBER
                    END-IF
 
                WHEN "V"
                WHEN "v"
-                   PERFORM RUN-TRIAL-VIEW
+                   PERFORM ASK-VIEW-ID
 
                WHEN "Q"
                WHEN "q"
                    CONTINUE
 
                WHEN OTHER
-                   DISPLAY " "
-                   DISPLAY C-RED "Invalid option." C-RESET
-                   PERFORM PRESS-ENTER
-
+                   DISPLAY "Invalid option."
+                   DISPLAY "Press ENTER to continue..." WITH NO ADVANCING
+                   ACCEPT WS-DUMMY
            END-EVALUATE
            .
 
-       RUN-TRIAL-VIEW.
+       ASK-VIEW-ID.
 
-           PERFORM CLEAR-SCREEN
-           MOVE "./bin/trial_view" TO WS-COMMAND
-           CALL "SYSTEM" USING WS-COMMAND
-           PERFORM PRESS-ENTER
+           DISPLAY "Enter database ID to view: " WITH NO ADVANCING
+           ACCEPT WS-VIEW-ID
+
+           IF FUNCTION TRIM(WS-VIEW-ID) NOT = SPACES
+               MOVE "./bin/trial_view" TO WS-VIEW-COMMAND
+               CALL "SYSTEM" USING WS-VIEW-COMMAND
+           END-IF
            .
-
-       PRESS-ENTER.
-
-           DISPLAY " "
-           DISPLAY "Press ENTER to continue..." WITH NO ADVANCING
-           ACCEPT WS-DUMMY
-           .
-           

@@ -135,7 +135,7 @@
              'replace(coalesce(message, ''''), ''|'', '' '') '
              'FROM '
              FUNCTION TRIM(DB-SCHEMA)
-             '.app_login('''
+             '.fn_app_login('''
              FUNCTION TRIM(WS-USERNAME-IN)
              ''', '''
              FUNCTION TRIM(WS-PASSWORD-IN)
