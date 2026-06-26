@@ -1,0 +1,16 @@
+# Python / API
+api/.env
+api/.venv/
+api/__pycache__/
+api/app/__pycache__/
+api/reports/
+*.pyc
+
+# COBOL build artifacts
+codes/bin/
+*.so
+*.o
+
+# Local temp / logs
+*.log
+*.tmp
