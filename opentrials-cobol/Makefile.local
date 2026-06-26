@@ -22,7 +22,8 @@ PROGRAMS := \
 	$(BIN_DIR)/trial_view \
 	$(BIN_DIR)/trial_menu \
 	$(BIN_DIR)/request_user \
-        $(BIN_DIR)/admin_user_requests
+        $(BIN_DIR)/admin_user_requests \
+	$(BIN_DIR)/reports_menu
 
 
 .PHONY: all modules programs clean run test-config test-login list view menu
@@ -63,6 +64,9 @@ $(BIN_DIR)/trial_menu: $(CODES_DIR)/trial_menu.cbl
 
 $(BIN_DIR)/admin_user_requests: $(CODES_DIR)/admin_user_requests.cbl $(CODES_DIR)/db_config.cpy $(CODES_DIR)/session.cpy $(BIN_DIR)/LOADCONF.so $(BIN_DIR)/LOGIN.so
 > cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/admin_user_requests admin_user_requests.cbl
+
+$(BIN_DIR)/reports_menu: $(CODES_DIR)/reports_menu.cbl $(CODES_DIR)/db_config.cpy $(BIN_DIR)/LOADCONF.so
+> cd $(CODES_DIR) && $(COBC) -x $(COBFLAGS) -o bin/reports_menu reports_menu.cbl
 
 run: all
 > cd $(CODES_DIR) && ./run.sh

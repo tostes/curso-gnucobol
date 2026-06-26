@@ -87,7 +87,7 @@
            DISPLAY C-GREEN  "  2" C-RESET " - View trial by database ID or RBR"
            DISPLAY C-YELLOW "  3" C-RESET " - Insert new trial              [coming soon]"
            DISPLAY C-YELLOW "  4" C-RESET " - Review / approve trial       [coming soon]"
-           DISPLAY C-YELLOW "  5" C-RESET " - Reports                      [coming soon]"
+           DISPLAY C-YELLOW "  r/R" C-RESET " - Reports"
            DISPLAY C-RED    "  0" C-RESET " - Exit"
 
            DISPLAY " "
@@ -123,7 +123,11 @@
                    PERFORM COMING-SOON
 
                WHEN "0"
-                   MOVE "Y" TO WS-EXIT-FLAG
+                       MOVE "Y" TO WS-EXIT-FLAG
+
+               WHEN "R"
+               WHEN "r"
+                   PERFORM OPEN-REPORTS-MENU
 
                WHEN OTHER
                    DISPLAY " "
@@ -147,6 +151,11 @@
            MOVE "./bin/trial_view" TO WS-COMMAND
            CALL "SYSTEM" USING WS-COMMAND
            PERFORM PRESS-ENTER
+           .
+
+       OPEN-REPORTS-MENU.
+
+           CALL "SYSTEM" USING "./bin/reports_menu"
            .
 
        COMING-SOON.
